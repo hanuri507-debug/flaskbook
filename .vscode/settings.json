@@ -1,0 +1,16 @@
+{
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": false
+  },
+
+  "mypy.runUsingActiveInterpreter": true,
+  "mypy.typeCheckingMode": "basic"
+}
