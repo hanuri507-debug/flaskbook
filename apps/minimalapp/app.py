@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template, url_for
 
 app = Flask(__name__)
 
@@ -6,8 +6,20 @@ app = Flask(__name__)
 def index():
    return "Hello, Flask!"
 
-@app.route("/hello",
-            methods=["GET"],
+@app.route("/hello/<name>",
+            methods=["GET", "POST"],
             endpoint="hello-endpoint")
-def hello():
-    return "Hello, World!"
+def hello(name):
+    return "Hello, {name}!"
+
+@app.route("/name/<name>")
+def show_name(name):
+    return render_template("index.html", name=name)
+
+with app.test_request_context():
+    # /
+    print(url_for("index"))
+    # /hello/world
+    print(url_for("hello-endpoint", name="world"))
+    # /name/AK?page=1
+    print(url_for("show_name", name="AK", page="1"))
