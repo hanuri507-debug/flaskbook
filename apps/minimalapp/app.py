@@ -1,9 +1,37 @@
 from email_validator import validate_email, EmailNotValidError
-from flask import (Flask, render_template, url_for, redirect, current_app, g, request, flash, )
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+from flask import (
+    Flask, render_template, url_for, 
+    redirect, current_app, g, request, flash, 
+    )
+import logging
+from flask_debugtoolbar import DebugToolbarExtension
+from flask_mail import Mail, Message
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "ehfiwued273AHbheJ"
+app.logger.setLevel(logging.DEBUG)
+app.logger.critical("fatal error")
+app.logger.error("error")
+app.logger.warning("warning")
+app.logger.info("info")
+app.logger.debug("debug")
+app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
+toolbar = DebugToolbarExtension(app)
+app.config["MAIL_SERVER"] = os.environ.get("MAIL_SERVER")
+app.config["MAIL_PORT"] = int(os.environ.get("MAIL_PORT", 587))
+app.config["MAIL_USE_TLS"] = os.environ.get("MAIL_USE_TLS") == "True"
+app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
+app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_DEFAULT_SENDER")
 
+mail = Mail(app)
 @app.route("/")
 def index():
    return "Hello, Flask!"
@@ -65,8 +93,21 @@ def contact_complete():
         if not is_valid:
             return redirect(url_for("contact"))
         # 이메일 보내기
+        send_email(
+            email,
+            "문의 감사합니다.",
+            "contact_mail",
+            username=username,
+            description=description,
+        )
 
         flash("문의해 주셔서 감사합니다(✿◡‿◡)")
         return redirect(url_for("contact_complete"))
     
     return render_template("contact_complete.html")
+def send_email(to, subject, template, **kwargs):
+    """메일 송신하는 함수"""
+    msg = Message(subject, recipients=[to])
+    msg.body = render_template(template + ".txt", **kwargs)
+    msg.html = render_template(template + ".html", **kwargs)
+    mail.send(msg)
