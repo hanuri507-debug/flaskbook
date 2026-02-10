@@ -6,6 +6,7 @@ load_dotenv()
 from flask import (
     Flask, render_template, url_for, 
     redirect, current_app, g, request, flash, 
+    make_response, session,
     )
 import logging
 from flask_debugtoolbar import DebugToolbarExtension
@@ -59,6 +60,10 @@ with app.test_request_context():
 
 @app.route("/contact")
 def contact():
+    response = make_response(render_template("contact.html"))
+    response.set_cookie("flaskbook key", "flaskbook value")
+    session["username"] = "AK"
+    return response
     return render_template("contact.html")
 
 @app.route("/contact/complete", methods=["GET", "POST"])
