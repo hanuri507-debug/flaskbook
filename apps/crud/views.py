@@ -1,5 +1,9 @@
 from flask import Blueprint, render_template
 
+from apps.app import db
+from apps.crud.models import User
+
+
 crud = Blueprint(
     "crud",
     __name__,
@@ -10,3 +14,9 @@ crud = Blueprint(
 @crud.route("/")
 def index():
     return render_template("crud/index.html")
+
+@crud.route("/sql")
+def sql():
+    users = db.session.query(User).all()
+    print(users)
+    return "콘솔 로그를 확인해 주세요"
