@@ -1,4 +1,5 @@
 from datetime import datetime
+import uuid
 
 from apps.app import db
 from werkzeug.security import generate_password_hash
@@ -9,6 +10,13 @@ class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
+
+    uuid = db.Column(
+        db.String(36),
+        unique=True,
+        default=lambda: str(uuid.uuid4()),
+        index=True
+    )
     username = db.Column(db.String, index=True)
     email = db.Column(db.String, unique=True, index=True)
     password_hash = db.Column(db.String)

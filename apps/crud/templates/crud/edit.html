@@ -10,13 +10,13 @@
     <h2>사용자 편집</h2>
 
     <form 
-        action="{{ url_for('crud.edit_user', user_id=user.id) }}"
+        action="{{ url_for('crud.edit_user', user_uuid=user.uuid) }}"
         method="post"
         novalidate="novalidate"
         >
         {{ form.csrf_token }}
         <p>
-            {{ form.username.label }} {{ form.username(placeholder="사용자명", value=username) }}
+            {{ form.username.label }} {{ form.username(placeholder="사용자명", value=user.username) }}
         </p>
         {% for error in form.username.errors %}
         <span style="color: red;">{{ error }}</span>

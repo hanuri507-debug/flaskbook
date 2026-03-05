@@ -51,11 +51,11 @@ def users():
     users = User.query.all()
     return render_template("crud/index.html", users=users)
 
-@crud.route("/users/<user_id>", methods=["GET","POST"])
-def edit_user(user_id):
+@crud.route("/users/<user_uuid>", methods=["GET","POST"])
+def edit_user(user_uuid):
     form = UserForm()
 
-    user == User.query.filter_by(id=user_id).first()
+    user = User.query.filter_by(uuid=user_uuid).first()
 
     if form.validate_on_submit():
         user.username = form.username.data
